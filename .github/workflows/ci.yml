@@ -40,21 +40,18 @@ jobs:
         if: ${{ steps.tagName.outputs.tag != 0 }}
         run: ./gradlew generateChangelog
 
-      - name: Read changelog file
-        if: ${{ steps.tagName.outputs.tag != 0 }}
-        id: readChangelog
-        run: echo "::set-output name=contents::$(cat build/tmp/changelog.md)"
-
       - name: Deploy (GitHub)
         if: ${{ steps.tagName.outputs.tag != 0 }}
-        uses: svenstaro/upload-release-action@2.2.1
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/libs/*
-          file_glob: true
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: ${{ steps.readChangelog.outputs.contents }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: build/tmp/changelog.md
+          draft: false
+          prerelease: false
 
       - name: Cleanup Gradle cache
         run: |
