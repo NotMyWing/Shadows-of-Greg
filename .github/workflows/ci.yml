@@ -53,6 +53,10 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Deploy (Curse)
+        if: ${{ steps.tagName.outputs.tag != 0 }}
+        run: ./gradlew deployCurseForge # to-do: should probably be an isolated action
+
       - name: Cleanup Gradle cache
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
