@@ -135,7 +135,7 @@ def getVersion () {
     } else {
         def commitNo = run "git rev-list ${lastTag}..HEAD --count"
 
-        return lastTag + "." + commitNo
+        return lastTag
     }
 }
 
